@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT-0
 
 SOURCE_PLANTUML   := $(wildcard *.plantuml)
-DIAGRAM_PDF       := $(subst .plantuml,.pdf,$(SOURCE_PLANTUML))
+DIAGRAM_SVG       := $(subst .plantuml,.svg,$(SOURCE_PLANTUML))
 HOST_INSTALLER    := $(shell type -P apt || type -P dnf || type -P zypper)
 HOST_REQUIREMENTS := plantuml
 
@@ -10,18 +10,18 @@ _ANSI_NORM := \033[0m
 _ANSI_CYAN := \033[36m
 
 .PHONY: all
-all: $(DIAGRAM_PDF) ## Generate PDF diagrams
+all: $(DIAGRAM_SVG) ## Generate SVG diagrams
 
-%.pdf: %.plantuml
-	plantuml -tpdf $<
+%.svg: %.plantuml
+	plantuml -tsvg $<
 
 .PHONY: test
-test: $(DIAGRAM_PDF) ## Display PDF diagrams
-	evince $<
+test: $(DIAGRAM_SVG) ## Display SVG diagrams
+	qiv $<
 
 .PHONY: clean
-clean: ## Delete PDF diagrams
-	rm -f $(DIAGRAM_PDF)
+clean: ## Delete SVG diagrams
+	rm -f $(DIAGRAM_SVG)
 
 .PHONY: install_requirements
 install_requirements: ## Install host requirements
