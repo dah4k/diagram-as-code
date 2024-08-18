@@ -3,7 +3,8 @@
 
 SOURCE_PLANTUML   := $(wildcard *.plantuml)
 DIAGRAM_SVG       := $(subst .plantuml,.svg,$(SOURCE_PLANTUML))
-HOST_INSTALLER    := $(shell type -P apt || type -P dnf || type -P zypper)
+HOST_INSTALL      := $(shell which apt 2>/dev/null || which dnf 2>/dev/null || which zypper 2>/dev/null) install
+HOST_UNINSTALL    := $(shell (which apt 2>/dev/null && echo "autoremove") || (which dnf 2>/dev/null && echo "autoremove") || (which zypper 2>/dev/null && echo "rm --clean-deps"))
 HOST_REQUIREMENTS := plantuml
 
 _ANSI_NORM := \033[0m
@@ -25,7 +26,11 @@ clean: ## Delete SVG diagrams
 
 .PHONY: install_requirements
 install_requirements: ## Install host requirements
-	sudo $(HOST_INSTALLER) install $(HOST_REQUIREMENTS)
+	sudo $(HOST_INSTALL) $(HOST_REQUIREMENTS)
+
+.PHONY: uninstall_requirements
+uninstall_requirements: ## Uninstall host requirements
+	sudo $(HOST_UNINSTALL) $(HOST_REQUIREMENTS)
 
 .PHONY: help usage
 help usage:
