@@ -1,8 +1,8 @@
 # Copyright 2024 dah4k
 # SPDX-License-Identifier: MIT-0
 
-SOURCE_PLANTUML   := $(wildcard *.plantuml)
-DIAGRAM_SVG       := $(subst .plantuml,.svg,$(SOURCE_PLANTUML))
+SOURCE_PLANTUML   := $(wildcard *.puml)
+DIAGRAM_SVG       := $(subst .puml,.svg,$(SOURCE_PLANTUML))
 HOST_INSTALL      := $(shell which apt 2>/dev/null || which dnf 2>/dev/null || which zypper 2>/dev/null) install
 HOST_UNINSTALL    := $(shell (which apt 2>/dev/null && echo "autoremove") || (which dnf 2>/dev/null && echo "autoremove") || (which zypper 2>/dev/null && echo "rm --clean-deps"))
 HOST_REQUIREMENTS := plantuml
@@ -18,7 +18,7 @@ help usage:
 .PHONY: all
 all: $(DIAGRAM_SVG) ## Generate diagrams
 
-%.svg: %.plantuml
+%.svg: %.puml
 	plantuml -tsvg $<
 
 .PHONY: test
