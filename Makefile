@@ -10,18 +10,23 @@ HOST_REQUIREMENTS := plantuml
 _ANSI_NORM := \033[0m
 _ANSI_CYAN := \033[36m
 
+.PHONY: help usage
+help usage:
+	@grep -hE '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?##"}; {printf "$(_ANSI_CYAN)%-24s$(_ANSI_NORM) %s\n", $$1, $$2}'
+
 .PHONY: all
-all: $(DIAGRAM_SVG) ## Generate SVG diagrams
+all: $(DIAGRAM_SVG) ## Generate diagrams
 
 %.svg: %.plantuml
 	plantuml -tsvg $<
 
 .PHONY: test
-test: $(DIAGRAM_SVG) ## Display SVG diagrams
+test: $(DIAGRAM_SVG) ## View generated diagrams
 	qiv $<
 
 .PHONY: clean
-clean: ## Delete SVG diagrams
+clean: ## Delete generated diagrams
 	rm -f $(DIAGRAM_SVG)
 
 .PHONY: install_requirements
@@ -31,8 +36,3 @@ install_requirements: ## Install host requirements
 .PHONY: uninstall_requirements
 uninstall_requirements: ## Uninstall host requirements
 	sudo $(HOST_UNINSTALL) $(HOST_REQUIREMENTS)
-
-.PHONY: help usage
-help usage:
-	@grep -hE '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
-		| awk 'BEGIN {FS = ":.*?##"}; {printf "$(_ANSI_CYAN)%-20s$(_ANSI_NORM) %s\n", $$1, $$2}'
